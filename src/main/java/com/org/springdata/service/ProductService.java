@@ -19,7 +19,17 @@ public class ProductService {
     }
 //Récupération de produits de façon unitaire avec la méthode findById()
     public Optional<Product> getProductById(Integer id){
-       return productRepository.findById(id);
+
+        return productRepository.findById(id);
+    }
+//Ajout d'un produit dans la base de données.
+    public Product addProduct(Product product) {
+
+        return productRepository.save(product);
+    }
+    //Suppression d'un Produit
+    public void deleteProductById(Integer id){
+        productRepository.deleteById(id);
     }
 
 }

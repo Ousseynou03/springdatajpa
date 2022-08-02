@@ -19,6 +19,15 @@ public class CategoryService {
     }
 
     public Optional<Category> getCategorieById(Integer id){
+
         return categoryRepository.findById(id);
+    }
+
+    public Category addCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+    //Suppression d'un Categorie
+    public void deleteCategory(Integer id) {
+        categoryRepository.deleteById(id);
     }
 }

@@ -18,6 +18,15 @@ public class Comment {
     private int commentId;
     @Column(name = "contenu")
     private String content;
-    @Column(name = "produit_id")
-    private int product_id;
+
+
+    @ManyToOne(
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
+    )
+    @JoinColumn(name="produit_id")
+    private Product product;
+
 }

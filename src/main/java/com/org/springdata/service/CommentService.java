@@ -20,6 +20,16 @@ public class CommentService {
     }
 
     public Optional<Comment> getCommentsById(Integer id){
+
         return commentRepository.findById(id);
+    }
+
+    public Comment addComment(Comment comment){
+        return commentRepository.save(comment);
+    }
+
+    //Suppression d'un Commentaire
+    public void deleteComment(Integer id) {
+        commentRepository.deleteById(id);
     }
 }

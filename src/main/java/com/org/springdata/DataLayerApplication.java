@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.transaction.Transactional;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ public class DataLayerApplication implements CommandLineRunner {
 	}
 
 	@Override
+	@Transactional
 	public void run(String... args) throws Exception {
 		System.out.println("---------------------------------------------Liste des Produits-----------------------------------------------");
 
@@ -54,6 +56,78 @@ public class DataLayerApplication implements CommandLineRunner {
 		Category category1 = optCategory.get();
 		System.out.println(category1.getName());
 
+		System.out.println("---------------------------------------------Comments id=1-----------------------------------------------");
+		Optional<Comment> optComment = commentService.getCommentsById(1);
+		Comment comment = optComment.get();
+		System.out.println(comment.getCommentId());
+
+		//Récupération d'un produit associé à un commentaire
+		System.out.println("---------------------------------------------Produit associé-----------------------------------------------");
+		productId1.getComments().forEach(
+				product -> System.out.println(product.getContent())
+		);
+
+		System.out.println("---------------------------------------------Liste des produits dans chaque categorie-----------------------------------------------");
+        category1.getProducts().forEach(product -> System.out.println(product.getName()));
+
+		productId1.getCategories().forEach(
+				category -> System.out.println(category.getName())
+		);
+
+		System.out.println("---------------------------------------------Ajout de Categories-----------------------------------------------");
+		//NB: A éviter . Ceci correspond à une liason forte. Ça n'aide pas à l'évolubilité de l'application.
+		Category newCategory = new Category();
+		newCategory.setName("Promotion");
+
+		newCategory = categoryService.addCategory(newCategory);
+
+		categoryService.getCategories().forEach(
+				category -> System.out.println(category.getName()));
+
+		System.out.println("---------------------------------------------Ajout de Produits-----------------------------------------------");
+		Product newProduct = new Product();
+		newProduct.setName("AssuranceAuTiersFidelite");
+		newProduct.setDescription("Les garanties de l'assurance au tiers à un prix moindre grâce à votre fidélité!");
+		newProduct.setCost(1100);
+		newProduct = productService.addProduct(newProduct);
+
+		newCategory.addProduct(newProduct);
+
+		newProduct = productService.addProduct(newProduct);
+
+		productService.getProducts().forEach(
+				product -> System.out.println(product.getName()));
+
+		newProduct.getCategories().forEach(
+				category -> System.out.println(category.getName()));
+
+
+		Comment newComment = new Comment();
+		newComment.setContent("Assurance extraordinaire!");
+		newProduct.addComment(newComment);
+
+		commentService.addComment(newComment);
+
+		//Update product
+		Product existingProduct = productService.getProductById(1).get();
+		System.out.println(existingProduct.getCost());
+
+		//ON va changer la valeur du coût. on fait appel à la variable existingProduct avec l'encapsulation set pour la modification
+		existingProduct.setCost(3000);
+		productService.addProduct(existingProduct);
+
+		existingProduct = productService.getProductById(1).get();
+		System.out.println(existingProduct.getCost());
+
+
+
+
+
+
+
+
 
 	}
+
+	
 }
